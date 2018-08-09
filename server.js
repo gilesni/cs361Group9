@@ -1,5 +1,5 @@
 var fs = require('fs'); //file system
-var path = require('path'); //library that finds paths based of the name use on line 11
+var path = require('path');
 var express = require('express');
 var exphbs = require('express-handlebars');
 var bodyParser = require('body-parser');
