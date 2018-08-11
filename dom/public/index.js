@@ -1,7 +1,7 @@
 //Global variables and objects
 var postControls;
 //var postId = 0;
-var tempPost;
+var newPost;
 
 var Post = function (){
 	this.user = "";
@@ -41,7 +41,7 @@ function OnPageLoad(){
 }
 
 function GetPostData(){
-	postData = new Post();
+	var postData = new Post();
 	postData.user = postControls.user.value;
 	postData.date = postControls.date.value;
 	postData.message = postControls.message.value;
@@ -57,39 +57,38 @@ function AddPost(){
 	var newData = GetPostData();
 	var insertLocation = ELByID("createPost");
 	//Creating post as a fragment, not part of page DOM yet
-	var newPost = CreatePost(postData);
+	newPost = CreatePost(newData);
 
 	//TODO: Add function to send form data to server via Ajax
 
 	//Opening warning popup
 	if(newData.isFake){
 		OpenFakeWarning("/warning.html", 400, 300);
-		tempPost = newPost;
 		return;
 	}
 	//Finally adding newly built post to page at insertLocation
 	insertAfter(newPost, insertLocation);
 }
 
-function CreatePost(postData){
+function CreatePost(post){
 	var elements = new Array(8);	// array of 8 DOM elements for post to be added
 	var fragment = document.createDocumentFragment();
 	var container = document.createElement("div");	
-	//Color post container based on fake status
 	elements[0] = document.createElement("span");
-	elements[0].textContent = postData.user;
+	elements[0].textContent = post.user;
 	elements[1]  = document.createElement("span");
-	elements[1].textContent = postData.date;
-	elements[2] = CreateLink(postData.lnk, "Link");
+	elements[1].textContent = post.date;
+	elements[2] = CreateLink(post.lnk, "Link");
 	elements[3]  = document.createElement("div");
-	elements[3].textContent = "Image: " + postData.image;
+	elements[3].textContent = "Image: " + post.image;
 	elements[4] = document.createElement("p");
 	elements[4].className = "PostText";
-	elements[4].textContent = postData.message;
-	elements[5] = CreateButton("Like", null, postData.isFake);
-	elements[6] = CreateButton("Reply", null, postData.isFake);
-	elements[7] = CreateButton("Report", OpenPostReport, postData.isFake);
-	if(postData.isFake){
+	elements[4].textContent = post.message;
+	elements[5] = CreateButton("Like", null, post.isFake);
+	elements[6] = CreateButton("Reply", null, post.isFake);
+	elements[7] = CreateButton("Report", OpenPostReport, post.isFake);
+	//Color post container based on fake status
+	if(post.isFake){
 		container.className = "FakePost";	
 	}
 	else {
@@ -163,7 +162,7 @@ function receiveMessage(event)
         if(event.data.result == "Post"){
         	//Creating the post
         	var insertLocation = ELByID("createPost");
-        	insertAfter(tempPost, insertLocation);
+        	insertAfter(newPost, insertLocation);
         }
     }
 }
