@@ -44,3 +44,7 @@ a, span {
   margin-left: 10px;
   margin-right: 10px;
 }
+input[type=button]{
+	margin-left: 3px;
+	margin-right: 3px;
+}

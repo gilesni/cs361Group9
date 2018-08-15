@@ -1,6 +1,5 @@
 //Global variables and objects
 var postControls;
-//var postId = 0;
 var newPost;
 
 var Post = function (){
@@ -12,7 +11,6 @@ var Post = function (){
 	this.privSetting = "";
 	this.isFake = false;
 }
-
 
 //Functions
 //Event listeners
@@ -53,7 +51,7 @@ function GetPostData(){
 }
 
 function AddPost(){
-	console.log("adding new post to page");
+	//console.log("adding new post to page");
 	var newData = GetPostData();
 	var insertLocation = ELByID("createPost");
 	//Creating post as a fragment, not part of page DOM yet
@@ -71,28 +69,34 @@ function AddPost(){
 }
 
 function CreatePost(post){
-	var elements = new Array(8);	// array of 8 DOM elements for post to be added
+	var elements = new Array(9);	// array of 8 DOM elements for post to be added
 	var fragment = document.createDocumentFragment();
 	var container = document.createElement("div");	
-	elements[0] = document.createElement("span");
-	elements[0].textContent = post.user;
-	elements[1]  = document.createElement("span");
-	elements[1].textContent = post.date;
-	elements[2] = CreateLink(post.lnk, "Link");
-	elements[3]  = document.createElement("div");
-	elements[3].textContent = "Image: " + post.image;
-	elements[4] = document.createElement("p");
-	elements[4].className = "PostText";
-	elements[4].textContent = post.message;
-	elements[5] = CreateButton("Like", null, post.isFake);
-	elements[6] = CreateButton("Reply", null, post.isFake);
-	elements[7] = CreateButton("Report", OpenPostReport, post.isFake);
+
+	elements[0] = CreateInput("hidden", post.isFake.toString(), null);
+	elements[0].name = "fakeStatus";
+	elements[1] = CreateLink("#", post.user, OpenUserReport);
+	elements[1].setAttribute("name", "username");
+	elements[2]  = document.createElement("span");
+	elements[2].textContent = post.date;
+	elements[3] = CreateLink(post.lnk, "Link", null);
+	elements[4]  = document.createElement("div");
+	elements[4].textContent = "Image: " + post.image;
+	elements[5] = document.createElement("p");
+	elements[5].textContent = post.message;
+	elements[6] = CreateInput("button", "Like", null);
+	elements[7] = CreateInput("button", "Reply", null);
+	elements[8] = CreateInput("button", "Report", OpenPostReport);	
+	elements[9] = CreateInput("button", "Whitelist", TogglePost);
+
+	//elements[9] = Create
 	//Color post container based on fake status
 	if(post.isFake){
-		container.className = "FakePost";	
+		container.className = "FakePost";
 	}
 	else {
-		container.className = "Post";	
+		container.className = "Post";
+		elements[9].value = "Flag";		
 	}
 	//Adding elements to container , this doesn't add them to the page yet
 	for(var i = 0; i < elements.length; i++){
@@ -102,21 +106,24 @@ function CreatePost(post){
 	return fragment;	
 }
 
-function CreateLink(link, text){
+function CreateLink(link, text, listener){
 	var linkElm  = document.createElement("a");
 	var linkText = document.createTextNode(text);
 	linkElm.appendChild(linkText);
 	linkElm.href = link;
+	if(listener != null){
+		linkElm.addEventListener("click", listener);
+	}
 	return linkElm;
 }
-function CreateButton(btnText, listener, isFake){
-	var btnElm  = document.createElement("input");
-	btnElm.setAttribute("type", "button");
-	btnElm.value = btnText;
-	if(isFake && listener != null){
-		btnElm.addEventListener("click", listener);
+function CreateInput(type, inText, listener){
+	var inputElm  = document.createElement("input");
+	inputElm.setAttribute("type", type);
+	inputElm.value = inText;
+	if(listener != null){
+		inputElm.addEventListener("click", listener);
 	}
-	return btnElm;
+	return inputElm;
 }
 function insertAfter(newNode, referenceNode) {
     referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
@@ -138,9 +145,39 @@ function OpenFakeWarning(url, width, height){
     }, 500);
  }
 
-function OpenPostReport(){
 
+function OpenPostReport(event){
+	var elm = event.target;
+	var parent = elm.parentNode;
+	for(var i = 0; i < parent.children.length; i++){
+			var currentElm = parent.children[i];
+		if(currentElm.name == "fakeStatus"){
+			var isFake = currentElm.value;
+			if(isFake == "true")
+			{
+				OpenWindow("postReport.html", "Post Report", window, 600, 450);
+			}
+		}
+	}
 }
+
+function OpenUserReport(event){
+	var elm = event.target;
+
+ 	var parent = elm.parentNode;
+ 	var userName = "";
+ 	for(var i = 0; i < parent.children.length; i++){
+			var currentElm = parent.children[i];
+		if(currentElm.name == "username"){
+			userName = currentElm.textContent;
+			//console.log("post's username:" + userName);
+		}
+	}
+
+	 sessionStorage.setItem("username", userName);	 
+	 var child = OpenWindow("userReport.html", "_blank", window, 600, 450);
+}
+
 function OpenWindow(url, title, win, w, h){
 	var y = win.top.outerHeight / 2 + win.top.screenY - ( h / 2);
     var x = win.top.outerWidth / 2 + win.top.screenX - ( w / 2);
@@ -157,7 +194,7 @@ function receiveMessage(event)
   // event.source is popup, event.data is data from popup
   //console.log("Received data from popup:");
   if (event.data.message == "deliverResult") {
-        console.log("Warning popup button: " + event.data.result);       
+        //console.log("Warning popup button: " + event.data.result);       
         event.source.close();
         if(event.data.result == "Post"){
         	//Creating the post
@@ -166,3 +203,28 @@ function receiveMessage(event)
         }
     }
 }
+
+function TogglePost(event){
+	var elm = event.target;
+	var parent = elm.parentNode;
+	for(var i = 0; i < parent.children.length; i++){
+			var currentElm = parent.children[i];
+		if(currentElm.type == "hidden"){
+			var isFake = currentElm.value;
+			if(isFake == "true"){
+				currentElm.value = "false";
+				parent.className = "Post";	
+				elm.value = "Flag";
+			}
+			else{
+				currentElm.value = "true";
+				parent.className = "FakePost";	
+				elm.value = "Whitelist";
+			}
+			break;
+		}
+	}
+}
+
+
+

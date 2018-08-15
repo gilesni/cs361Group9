@@ -1,0 +1,41 @@
+h3{  	
+	margin: 0px;
+}
+.container{
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: center;
+}
+.UserSettings{
+	order: 0;
+	flex-grow: 1;
+}
+.title{
+	order: 1;
+	flex-grow: 1;
+}
+.UserReport{
+	display: flex;
+	flex-flow: row nowrap;
+	align-items: center;
+	order: 2;
+	flex-grow: 2;
+	margin-right: 30px;
+}
+.PlatformSettings{
+	order: 1;
+	flex-grow: 2;
+}
+.PostHistory{
+	order: 2;
+	flex-grow: 2;
+	margin-left:30px;
+}
+.PostHistory td{
+	padding-left:10px;
+	padding-right:10px;
+}
+#ChartContainer{
+	order: 3;
+	flex-grow: 2;
+}
