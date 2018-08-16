@@ -4,7 +4,8 @@
   "description": "A simple web server for posting things",
   "main": "server.js",
   "dependencies": {
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "forever": "^0.15.3"
   },
   "devDependencies": {},
   "scripts": {
