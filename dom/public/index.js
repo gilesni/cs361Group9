@@ -1,6 +1,7 @@
 //Global variables and objects
 var postControls;
 var newPost;
+var numFakePosts=0,fakePostLimit=3;
 
 var Post = function (){
 	this.user = "";
@@ -36,6 +37,12 @@ function OnPageLoad(){
 	//new Post DOM addition to page
 	var submitBtn = ELByID("submitInput");
 	submitBtn.addEventListener("click", AddPost);
+	//Adding change listener to start fakepost countdown
+	postControls.user.addEventListener("change",function(){
+		numFakePosts=0;
+		var numFakePostsElm = ELByID("numFakePosts");
+		numFakePostsElm.value = numFakePosts;
+	});
 }
 
 function GetPostData(){
@@ -61,8 +68,18 @@ function AddPost(){
 
 	//Opening warning popup
 	if(newData.isFake){
-		OpenFakeWarning("/warning.html", 400, 200);
-		return;
+
+		if(numFakePosts >= fakePostLimit){	//Just show banned user warning
+			OpenFakeWarning("/banned.html", 400, 200);
+			return;
+		}
+		else{//User still can post fake posts
+			numFakePosts++;
+			var numFakePostsElm = ELByID("numFakePosts");
+			numFakePostsElm.value = numFakePosts;
+			OpenFakeWarning("/warning.html", 400, 200);
+			return;
+		}	
 	}
 	//Finally adding newly built post to page at insertLocation
 	insertAfter(newPost, insertLocation);
@@ -224,6 +241,10 @@ function TogglePost(event){
 			break;
 		}
 	}
+}
+
+function IncrNumFakePosts(){
+	
 }
 
 

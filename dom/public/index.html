@@ -22,10 +22,14 @@
 							<option value="public">Public</option>
 							<option value="private">Private</option>
 							<option value="custom1">Custom Setting 1</option>
-							<option value="custom2">Custome Setting 2</option>
+							<option value="custom2">Custom Setting 2</option>
 					      </select><br>
-					<input type="radio" value="notFake" name="isFake" checked>Not Fake
-					<input type="radio" id="fakeInput" value="fake" name="isFake">Fake<br>
+					 <div>
+					 	<input type="radio" value="notFake" name="isFake" checked>Not Fake
+						<input type="radio" id="fakeInput" value="fake" name="isFake">Fake
+						<label for="numFakePosts" style="margin-left:50px;">Num fake posts:</label>
+						<input type="number" id="numFakePosts" value="0" style="display:inline-block;width:30px"><br>
+					 </div>		
 					<input id="submitInput" type="button" value="Submit" style="display:block;margin:auto;">
 				</fieldset>
 			</form><br>
