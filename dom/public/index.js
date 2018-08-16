@@ -155,7 +155,7 @@ function OpenPostReport(event){
 			var isFake = currentElm.value;
 			if(isFake == "true")
 			{
-				OpenWindow("postReport.html", "Post Report", window, 600, 450);
+				OpenWindow("postReport.html", "Post Report", window, 450, 350);
 			}
 		}
 	}
