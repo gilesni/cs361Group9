@@ -7,8 +7,8 @@ app.get('/', (req, res, next) => {
   res.status(200).sendFile(__dirname + '/public/index.html');
 });
 
-app.listen(3000, (err) => {
+app.listen(10000, (err) => {
   if (!err) {
-    console.log("Server listening on port 3000");
+    console.log("Server listening on port 10000");
   }
 });
