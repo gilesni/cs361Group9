@@ -61,7 +61,7 @@ function AddPost(){
 
 	//Opening warning popup
 	if(newData.isFake){
-		OpenFakeWarning("/warning.html", 400, 300);
+		OpenFakeWarning("/warning.html", 400, 200);
 		return;
 	}
 	//Finally adding newly built post to page at insertLocation
